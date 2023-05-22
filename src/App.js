@@ -55,7 +55,9 @@ export default function App() {
     return Array.from(Array(10), () => (generateNewDie()));
   }
   function roll() {
-    setRolls(rolls + 1);
+    if (started) {
+      setRolls(rolls + 1);
+    }
     if (tenzies) {
       setTenzies(false);
       setDice(allNewDice());
