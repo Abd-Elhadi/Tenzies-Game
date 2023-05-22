@@ -83,7 +83,7 @@ export default function App() {
       holdDice={() => holdDice(die.id)}
     />));
   return (
-    <main>
+    <main className="container">
       {tenzies && <Confetti />}
       <div className="title-box">
         <h3>Rolls Count: <span className="rolls">{rolls}</span></h3>
