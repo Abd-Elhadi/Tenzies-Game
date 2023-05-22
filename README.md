@@ -1,4 +1,4 @@
-# Meme Generator
+# Tenzies Game
 
 Tenzies is a fun dice game that you can play with your friends and family. The game requires you to roll the dice and try to match the numbers on the dice with the numbers on the board.
 
