@@ -66,4 +66,4 @@ I'd like to:
 - 💾 Local Storage to save the game stats
 
 ## Author
-[Abdelhadi Omar](mailto:abdelhadioumar@gmail.com?subject=[GitHub]%20Tenzies%20Han%20Game)
+[Abdelhadi Omar](mailto:abdelhadioumar@gmail.com?subject=[GitHub]%20Tenzies%20Game)
