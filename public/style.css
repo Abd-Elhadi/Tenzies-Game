@@ -48,9 +48,14 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     background-color: #fff;
     transition: 0.3s;
+    pointer-events: none;
+}
+
+.started {
+    pointer-events: all;
+    cursor: pointer;
 }
 
 .die-face:hover,
@@ -93,5 +98,6 @@ main {
 }
 
 .seconds {
+    /* red color from material design */
     color: #FF5252;
 }
