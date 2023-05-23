@@ -61,9 +61,7 @@ React basics like:
 
 I'd like to:
 
-- 🎲 Rolling dice animation 
-- 🎉 Confetti animation when the game is won 
-- 💾 Local Storage to save the game stats
+- 🎲 Generate Die using pure CSS  
 
 ## Author
 [Abdelhadi Omar](mailto:abdelhadioumar@gmail.com?subject=[GitHub]%20Tenzies%20Game)
