@@ -1,7 +1,7 @@
 import React from "react";
-import Die from "./Die"
-import {nanoid} from "nanoid";
-import Confetti from "react-confetti"
+import Die from "./Die";
+import { nanoid } from "nanoid";
+import Confetti from "react-confetti";
 
 export default function App() {
   const [dice, setDice] = React.useState(allNewDice());
@@ -9,13 +9,20 @@ export default function App() {
   const [rolls, setRolls] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
   const [started, setStarted] = React.useState(false);
+  const [minRolls, setMinRolls] = React.useState(() => {
+    const storedMinRolls = localStorage.getItem("minRolls");
+    return storedMinRolls ? parseInt(storedMinRolls, 10) : Number.MAX_SAFE_INTEGER;
+  });
+  const [minSeconds, setMinSeconds] = React.useState(() => {
+    const storedMinSeconds = localStorage.getItem("minSeconds");
+    return storedMinSeconds ? parseInt(storedMinSeconds, 10) : Number.MAX_SAFE_INTEGER;
+  });
 
-  // only start the timer after the user clicks the button
   React.useEffect(() => {
-    let interval
+    let interval;
     if (started && !tenzies) {
       interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
+        setSeconds((prevSeconds) => prevSeconds + 1);
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -24,36 +31,53 @@ export default function App() {
     }
     return () => clearInterval(interval);
   }, [started, tenzies]);
-  
 
   React.useEffect(() => {
-    const allHeld = dice.every(die => die.isHeld);
+    const allHeld = dice.every((die) => die.isHeld);
     const firstValue = dice[0].value;
-    const sameValues = dice.every(die => die.value === firstValue)
+    const sameValues = dice.every((die) => die.value === firstValue);
     if (allHeld && sameValues) {
       setTenzies(true);
+      if (rolls < minRolls) {
+        setMinRolls(rolls);
+        localStorage.setItem("minRolls", rolls.toString());
+      }
+      if (seconds < minSeconds) {
+        setMinSeconds(seconds);
+        localStorage.setItem("minSeconds", seconds.toString());
+      }
     }
-  }, [dice])
+  }, [dice, rolls, seconds, minRolls, minSeconds]);
+
 
   function holdDice(dieId) {
-    setDice(prevDice => {
-      return prevDice.map(die => {
-        return die.id === dieId ? {...die, isHeld: !die.isHeld} : die
-      })
-    })
+    setDice((prevDice) => {
+      const index = prevDice.findIndex((die) => die.id === dieId);
+      if (index !== -1) {
+        const updatedDice = [...prevDice];
+        updatedDice[index] = {
+          ...updatedDice[index],
+          isHeld: !updatedDice[index].isHeld,
+        };
+        return updatedDice;
+      }
+      return prevDice;
+    });
   }
 
   function generateNewDie() {
     return {
-      value: Math.floor(Math.random() * 6) + 1,
+      value: Math.ceil(Math.random() * 6),
       isHeld: false,
-      id: nanoid()
-    }
+      id: nanoid(),
+    };
   }
+  
 
   function allNewDice() {
     return Array.from(Array(10), () => (generateNewDie()));
   }
+
   function roll() {
     if (started) {
       setRolls(rolls + 1);
@@ -74,14 +98,19 @@ export default function App() {
       })
     });
   }
-  const diceElements = dice.map(die => (
-    <Die
-      started={started}
-      key={die.id}
-      value={die.value}
-      isHeld={die.isHeld}
-      holdDice={() => holdDice(die.id)}
-    />));
+  
+  const diceElements = React.useMemo(() => {
+    return dice.map((die) => (
+      <Die
+        started={started}
+        key={die.id}
+        value={die.value}
+        isHeld={die.isHeld}
+        holdDice={() => holdDice(die.id)}
+      />
+    ));
+  }, [dice, started]);
+  
   return (
     <main className="container">
       {tenzies && <Confetti />}
@@ -100,6 +129,10 @@ export default function App() {
         >
           {tenzies ? 'New Game' : started ? 'Roll' : 'Start Game'}
       </button>
+      <div className="title-box stats">
+        <h3>Minimum rolls: <span className="rolls">{minRolls !== Number.MAX_SAFE_INTEGER ? minRolls : '00'}</span></h3>
+        <h3>Shortest time: <span className="seconds">{minSeconds !== Number.MAX_SAFE_INTEGER ? minSeconds : '00'}</span></h3>
+      </div>
     </main>
   )
 }
